@@ -1,0 +1,12 @@
+{
+    "endpoint": "/lb",
+    "secret": "TYPE-YOUR-SECRET-HERE",
+    "upstream_file": "./docker-upstream.conf",
+    "reload_nginx_config": true,
+    "reload_nginx_command": "nginx -s reload",
+    "sorted": true,
+    "hostsfile": "/etc/hosts",
+    "port": 9080,
+    "upstream_default_prefix": "",
+    "upstream_default_suffix": ""
+}

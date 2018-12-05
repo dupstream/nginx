@@ -1,0 +1,22 @@
+{
+  "name": "dupstream-nginx",
+  "version": "1.0.0",
+  "description": "Dynamic upstream generator for your load balancer.",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dupstream/nginx.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dupstream/nginx/issues"
+  },
+  "homepage": "https://github.com/dupstream/nginx#readme",
+  "dependencies": {
+    "express": "^4.16.4"
+  }
+}
