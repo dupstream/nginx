@@ -16,10 +16,19 @@ const port = process.env.PORT || config.port || 9080;
 
 const Keys = {
     UPSTREAM_PREFIX: "dupstream.upstream.prefix",
-    UPSTREAM_SUFFIX: "dupstream.upstream.suffix"
+    UPSTREAM_SUFFIX: "dupstream.upstream.suffix",
+    IGNORE: "dupstream.ignore",
+    FILE: "dupstream.file",
 }
 
 function updateConfig(data) {
+
+    if (!config.upstream_file)
+        throw "There is no upstream_file definition in config.";
+
+    if (!Object.keys(config.upstream_file).length)
+        throw "There is no upstream_file definition in config.";
+
     const hostFilePath = process.env.HOSTSFILE || config.hostsfile || "/etc/hosts";
 
     let hostFileContent = fs.readFileSync(hostFilePath).toString();
@@ -53,9 +62,6 @@ function updateConfig(data) {
     let newHostFile = hostFileLines.join('\n');
     fs.writeFileSync(hostFilePath, newHostFile);
 
-    const upstreamFilePath = config.upstream_file;
-    let upstreamContent = "";
-
     if (config.sorted) {
         data.services.sort((a, b) => {
             if (a.Name < b.Name)
@@ -66,13 +72,26 @@ function updateConfig(data) {
         });
     }
 
+    let upstreamFiles = {};
+    Object.keys(config.upstream_file).map(key => {
+        upstreamFiles[key] = {
+            name: key,
+            content: "",
+            path: config.upstream_file[key]
+        };
+    });
+
     data.services.map(service => {
         if (!service.Nodes.length) return;
         if (!service.Ports.length) return;
 
-        const port = service.Ports[0];
+        if (service.Labels[Keys.IGNORE]) return;
 
-        upstreamContent += `upstream ${service.Name} {\n`;
+        const configName = service.Labels[Keys.FILE] || "default";
+        if (!upstreamFiles[configName]) return;
+
+        const port = service.Ports[0];
+        let upstreamContent = `upstream ${service.Name} {\n`;
         if (service.Labels[Keys.UPSTREAM_PREFIX] && service.Labels[Keys.UPSTREAM_PREFIX].length) {
             upstreamContent += `\t${service.Labels[Keys.UPSTREAM_PREFIX]}\n\n`;
         } else if (config.upstream_default_prefix && config.upstream_default_prefix.length) {
@@ -89,10 +108,15 @@ function updateConfig(data) {
             upstreamContent += `\n\t${config.upstream_default_suffix}\n`;
         }
         upstreamContent += "}\n\n"
+
+        upstreamFiles[configName].content += upstreamContent;
     });
 
-    fs.writeFileSync(upstreamFilePath, upstreamContent);
-    console.log(`${new Date()} Successfully written config file to ${upstreamFilePath}.`);
+    Object.keys(upstreamFiles).map(key => {
+        const ufile = upstreamFiles[key];
+        fs.writeFileSync(ufile.path, ufile.content);
+        console.log(`${new Date()} Successfully written config file to ${ufile.path}.`);
+    });
 
     if (config.reload_nginx_config) {
         try {

@@ -1,7 +1,10 @@
 {
     "endpoint": "/lb",
     "secret": "TYPE-YOUR-SECRET-HERE",
-    "upstream_file": "./docker-upstream.conf",
+    "upstream_file": {
+        "default": "./docker-upstream.conf",
+        "global": "./docker-global-upstream.conf"
+    },
     "reload_nginx_config": true,
     "reload_nginx_command": "nginx -s reload",
     "sorted": true,

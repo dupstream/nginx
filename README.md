@@ -83,7 +83,7 @@ and hosts file will be updated like this;
 
 You can use service labels (on Docker for example) for managing upstream suffix and prefix.
 
-`dupstream.upstream.prefix` for Upstream Prefix and `dupstream.upstream.suffix` for Upstream Suffix.
+`dupstream.upstream.prefix` for Upstream Prefix and `dupstream.upstream.suffix` for Upstream Suffix. Also you can ignore a service with `dupstream.ignore` label. Also you can define a service upstream file location with `dupstream.file` (this attributes only allows you to name binding not the file).
 
 You will also have a config file which is "config.json". You can modify it as you wish. Here is the configuration table.
 
@@ -91,7 +91,7 @@ You will also have a config file which is "config.json". You can modify it as yo
 |----|-------|-----------|
 |endpoint|`/lb`|Your service endpoint|
 |secret|`TYPE-YOUR-SECRET-HERE`|Secure your endpoint with secret|
-|upstream_file|`./docker-upstream.conf`|Your upstream file.|
+|upstream_file|`array "name":"file"`|Your upstream file.|
 |reload_nginx_config|`true`|Reload nginx config after generate.|
 |reload_nginx_command|`nginx -s reload`|nginx reload command|
 |sorted|`true`|Sort services by name|
@@ -106,7 +106,10 @@ And json file;
 {
     "endpoint": "/lb",
     "secret": "TYPE-YOUR-SECRET-HERE",
-    "upstream_file": "./docker-upstream.conf",
+    "upstream_file": {
+        "default": "./docker-upstream.conf",
+        "global": "./docker-global-upstream.conf"
+    },
     "reload_nginx_config": true,
     "reload_nginx_command": "nginx -s reload",
     "sorted": true,

@@ -86,5 +86,6 @@ typings/
 
 hosts
 docker-upstream.conf
+docker-global-upstream.conf
 
 .vscode/
