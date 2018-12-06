@@ -99,6 +99,8 @@ You will also have a config file which is "config.json". You can modify it as yo
 |port|`9080`|Application port|
 |upstream_default_prefix|`empty`|Upstream default prefix|
 |upstream_default_suffix|`empty`|Upstream default suffix|
+|upstream.always|`true`|It will add upstreams even there is no task.|
+|upstream.default|`localhost`|Default upstream server if there is no task.|
 
 And json file;
 
@@ -107,8 +109,8 @@ And json file;
     "endpoint": "/lb",
     "secret": "TYPE-YOUR-SECRET-HERE",
     "upstream_file": {
-        "default": "./docker-upstream.conf",
-        "global": "./docker-global-upstream.conf"
+        "default": "./docker-upstream-default.conf",
+        "global": "./docker-upstream-global.conf"
     },
     "reload_nginx_config": true,
     "reload_nginx_command": "nginx -s reload",
@@ -116,6 +118,10 @@ And json file;
     "hostsfile": "/etc/hosts",
     "port": 9080,
     "upstream_default_prefix": "",
-    "upstream_default_suffix": ""
+    "upstream_default_suffix": "",
+    "upstream": {
+      "always": true,
+      "default": "localhost"
+    }
 }
 ```

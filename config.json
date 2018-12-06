@@ -2,8 +2,8 @@
     "endpoint": "/lb",
     "secret": "TYPE-YOUR-SECRET-HERE",
     "upstream_file": {
-        "default": "./docker-upstream.conf",
-        "global": "./docker-global-upstream.conf"
+        "default": "./docker-upstream-default.conf",
+        "global": "./docker-upstream-global.conf"
     },
     "reload_nginx_config": true,
     "reload_nginx_command": "nginx -s reload",
@@ -11,5 +11,9 @@
     "hostsfile": "/etc/hosts",
     "port": 9080,
     "upstream_default_prefix": "",
-    "upstream_default_suffix": ""
+    "upstream_default_suffix": "",
+    "upstream": {
+        "always": true,
+        "default": "localhost"
+    }
 }

@@ -85,7 +85,7 @@ typings/
 .dynamodb/ 
 
 hosts
-docker-upstream.conf
-docker-global-upstream.conf
+docker-upstream-default.conf
+docker-upstream-global.conf
 
 .vscode/

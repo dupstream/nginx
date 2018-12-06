@@ -82,7 +82,7 @@ function updateConfig(data) {
     });
 
     data.services.map(service => {
-        if (!service.Nodes.length) return;
+        if (!service.Nodes.length && !config.upstream.always) return;
         if (!service.Ports.length) return;
 
         if (service.Labels[Keys.IGNORE]) return;
@@ -97,11 +97,16 @@ function updateConfig(data) {
         } else if (config.upstream_default_prefix && config.upstream_default_prefix.length) {
             upstreamContent += `\t${config.upstream_default_prefix}\n\n`;
         }
-        service.Nodes.map(nodeId => {
-            const node = nodes[nodeId];
-            if (!node) return;
-            upstreamContent += `\tserver\t${node.Name}:${port.PublishedPort};\n`;
-        });
+        if (!service.Nodes.length) {
+            upstreamContent += `\tserver\t${config.upstream.default}:${port.PublishedPort};\n`;
+        } else {
+            service.Nodes.map(nodeId => {
+                const node = nodes[nodeId];
+                if (!node) return;
+                upstreamContent += `\tserver\t${node.Name}:${port.PublishedPort};\n`;
+            });
+        }
+
         if (service.Labels[Keys.UPSTREAM_SUFFIX] && service.Labels[Keys.UPSTREAM_SUFFIX].length) {
             upstreamContent += `\n\t${service.Labels[Keys.UPSTREAM_SUFFIX]}\n`;
         } else if (config.upstream_default_suffix && config.upstream_default_suffix.length) {
