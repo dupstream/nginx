@@ -125,3 +125,51 @@ And json file;
     }
 }
 ```
+
+Do you want to run it as linux service? OK!
+
+First create a service file;
+
+```sh
+nano /etc/systemd/system/dupstream.service
+```
+
+Paste it (change it as you like);
+
+```apache
+[Unit]
+Description=dupstream application service
+[Service]
+ExecStart=/usr/bin/node app.js
+# Required on some systems
+WorkingDirectory=/var/www/apps/dupstream
+Restart=always
+# Restart service after 5 seconds if node service crashes
+RestartSec=5
+# Output to syslog
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=dupstream-app
+#User=<alternate user>
+#Group=<alternate group>
+Environment=NODE_ENV=production
+
+[Install]
+WantedBy=multi-user.target
+```
+
+```sh
+# Enable it
+systemctl enable dupstream.service
+# Start it
+systemctl start dupstream.service
+# Check everything is OK
+systemctl status dupstream.service
+```
+
+When you edit this service, it won't reload directly. You have to run;
+
+```sh
+systemctl daemon-reload
+systemctl restart dupstream.service
+```
